@@ -1,6 +1,5 @@
 package com.kytoon.frameworks_project_backend.model;
 
-import com.kytoon.frameworks_project_backend.enums.UserType;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
