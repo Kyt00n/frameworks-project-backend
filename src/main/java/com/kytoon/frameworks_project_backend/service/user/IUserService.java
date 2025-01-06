@@ -7,4 +7,5 @@ public interface IUserService {
     User getUserById(Long id);
     User getUserByEmail(String email);
     User createUser(AddUserRequest user);
+    User getUserByUsername(String username);
 }

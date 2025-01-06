@@ -36,4 +36,9 @@ public class UserService implements IUserService {
                     return userRepository.save(newUser);
                 }).orElseThrow(()-> new UserNotFoundException("user already exists"));
     }
+
+    @Override
+    public User getUserByUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
 }
