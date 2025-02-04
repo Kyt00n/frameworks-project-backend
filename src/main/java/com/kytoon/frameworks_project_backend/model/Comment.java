@@ -1,5 +1,6 @@
 package com.kytoon.frameworks_project_backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,5 +20,6 @@ public class Comment {
     private User user;
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "post_id")
+    @JsonIgnoreProperties({"comments", "post", "user"})
     private Post post;
 }

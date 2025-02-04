@@ -44,7 +44,7 @@ public class ImageService implements IImageService{
                 image.setImage(new SerialBlob(file.getBytes()));
                 image.setContainer(post);
 
-                String buildDownloadUrl = "/api/v1/images/image/download/";
+                String buildDownloadUrl = "/api/images/image/download/";
                 String downloadUrl = buildDownloadUrl + image.getId();
                 image.setDownloadUrl(downloadUrl);
                 Image savedImage = imageRepository.save(image);
@@ -77,5 +77,10 @@ public class ImageService implements IImageService{
             throw new RuntimeException(e.getMessage());
         }
 
+    }
+
+    @Override
+    public List<Image> getImagesByPostId(Long postId) {
+        return imageRepository.findByContainerId(postId);
     }
 }

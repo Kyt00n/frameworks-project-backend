@@ -1,5 +1,6 @@
 package com.kytoon.frameworks_project_backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.kytoon.frameworks_project_backend.enums.UserType;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -23,6 +24,7 @@ public class User {
     private String password;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnoreProperties("user")
     private List<Post> posts;
 
 }
