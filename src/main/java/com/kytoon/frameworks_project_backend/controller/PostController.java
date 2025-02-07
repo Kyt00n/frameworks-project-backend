@@ -7,6 +7,7 @@ import com.kytoon.frameworks_project_backend.model.Post;
 import com.kytoon.frameworks_project_backend.request.AddCommentRequest;
 import com.kytoon.frameworks_project_backend.request.AddPostRequest;
 import com.kytoon.frameworks_project_backend.response.ApiResponse;
+import com.kytoon.frameworks_project_backend.response.GetPostResponse;
 import com.kytoon.frameworks_project_backend.service.comment.ICommentService;
 import com.kytoon.frameworks_project_backend.service.image.IImageService;
 import com.kytoon.frameworks_project_backend.service.post.IPostService;
@@ -37,9 +38,13 @@ public class PostController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse> getAllPosts() {
+    public ResponseEntity<ApiResponse> getAllPosts(@RequestParam(value = "limit", required = false) Integer limit) {
         try {
-            List<Post> posts = postService.getAllPosts();
+            List<GetPostResponse> posts;
+            if (limit != null) {
+                posts = postService.getAllPosts().stream().limit(limit).toList();
+            } else
+                posts = postService.getAllPosts();
             return ResponseEntity.ok(new ApiResponse("Success", posts));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse("Error", e.getMessage()));
@@ -49,7 +54,7 @@ public class PostController {
     @GetMapping("/user/{userId}")
     public ResponseEntity<ApiResponse> getAllPostsByUser(@PathVariable Long userId) {
         try {
-            List<Post> posts = postService.getAllPostsByUser(userId);
+            List<GetPostResponse> posts = postService.getAllPostsByUser(userId);
             return ResponseEntity.ok(new ApiResponse("Success", posts));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse("Error", e.getMessage()));
@@ -59,7 +64,7 @@ public class PostController {
     @GetMapping("/id/{postId}")
     public ResponseEntity<ApiResponse> getPostById(@PathVariable Long postId) {
         try {
-            Post post = postService.getPostById(postId);
+            GetPostResponse post = postService.getPostById(postId);
             return ResponseEntity.ok(new ApiResponse("Success", post));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse("Error", e.getMessage()));
