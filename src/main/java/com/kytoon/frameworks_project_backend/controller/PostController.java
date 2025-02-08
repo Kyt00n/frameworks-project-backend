@@ -1,12 +1,11 @@
 package com.kytoon.frameworks_project_backend.controller;
 
 import com.kytoon.frameworks_project_backend.dto.ImageDto;
-import com.kytoon.frameworks_project_backend.model.Comment;
 import com.kytoon.frameworks_project_backend.model.Image;
-import com.kytoon.frameworks_project_backend.model.Post;
 import com.kytoon.frameworks_project_backend.request.AddCommentRequest;
 import com.kytoon.frameworks_project_backend.request.AddPostRequest;
 import com.kytoon.frameworks_project_backend.response.ApiResponse;
+import com.kytoon.frameworks_project_backend.response.GetCommentResponse;
 import com.kytoon.frameworks_project_backend.response.GetPostResponse;
 import com.kytoon.frameworks_project_backend.service.comment.ICommentService;
 import com.kytoon.frameworks_project_backend.service.image.IImageService;
@@ -30,8 +29,8 @@ public class PostController {
     @PostMapping("/upload")
     public ResponseEntity<ApiResponse> uploadPost(@RequestBody AddPostRequest postRequest) {
         try {
-            Post createdPost = postService.createPost(postRequest);
-            return ResponseEntity.ok(new ApiResponse("Post created successfully", createdPost));
+            postService.createPost(postRequest);
+            return ResponseEntity.ok(new ApiResponse("Post created successfully", null));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse("Error creating post", e.getMessage()));
         }
@@ -74,8 +73,8 @@ public class PostController {
     @PostMapping("/comment/{postId}")
     public ResponseEntity<ApiResponse> addComment(@PathVariable Long postId, @RequestBody AddCommentRequest commentRequest) {
         try {
-            Comment createdComment = commentService.createCommentForPost(postId, commentRequest);
-            return ResponseEntity.ok(new ApiResponse("Comment added successfully", createdComment));
+            commentService.createCommentForPost(postId, commentRequest);
+            return ResponseEntity.ok(new ApiResponse("Comment added successfully", null));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse("Error adding comment", e.getMessage()));
         }
@@ -83,7 +82,7 @@ public class PostController {
     @GetMapping("/comment/{postId}")
     public ResponseEntity<ApiResponse> getAllCommentsForPost(@PathVariable Long postId) {
         try {
-            List<Comment> comments = commentService.getAllCommentsForPost(postId);
+            List<GetCommentResponse> comments = commentService.getAllCommentsForPost(postId);
             return ResponseEntity.ok(new ApiResponse("Success", comments));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse("Error", e.getMessage()));
@@ -107,5 +106,33 @@ public class PostController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse("Error", e.getMessage()));
         }
     }
+    @PostMapping("/{postId}/like")
+    public ResponseEntity<ApiResponse> likePost(@PathVariable Long postId, @RequestParam(value = "userId") Long userId) {
+        try {
+            postService.likePost(postId, userId);
+            return ResponseEntity.ok(new ApiResponse("Post liked successfully", null));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse("Error liking post", e.getMessage()));
+        }
+    }
 
+    @PostMapping("/{postId}/unlike")
+    public ResponseEntity<ApiResponse> unlikePost(@PathVariable Long postId, @RequestParam(value = "userId") Long userId) {
+        try {
+            postService.unlikePost(postId, userId);
+            return ResponseEntity.ok(new ApiResponse("Post unliked successfully", null));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse("Error unliking post", e.getMessage()));
+        }
+    }
+
+    @DeleteMapping("/{postId}")
+    public ResponseEntity<ApiResponse> deletePost(@PathVariable Long postId) {
+        try {
+            postService.deletePost(postId);
+            return ResponseEntity.ok(new ApiResponse("Post deleted successfully", null));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse("Error deleting post", e.getMessage()));
+        }
+    }
 }
